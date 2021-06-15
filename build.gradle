@@ -1,0 +1,84 @@
+buildscript {
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.2.71"
+
+
+        // for Spec - http://spekframework.org/docs/latest/
+        classpath 'org.junit.platform:junit-platform-gradle-plugin:1.0.0'
+
+    }
+}
+
+plugins {
+    id 'java'
+    id "org.jetbrains.kotlin.jvm" version "1.2.71"
+}
+
+apply plugin: 'kotlin'
+apply plugin: 'maven'
+
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+//
+// Will be published to jitpack by github at:
+// https://jitpack.io/com/github/mycordaapp/registry/<version>
+//
+group "com.github.mycordaapp"
+version "0.0.1"
+
+repositories {
+    mavenCentral()
+    maven { url "https://repo.gradle.org/gradle/libs-releases" }
+    maven { url "https://jitpack.io" }
+}
+
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile) {
+    kotlinOptions {
+        languageVersion = "1.2"
+        apiVersion = "1.2"
+        jvmTarget = "1.8"
+        javaParameters = true
+    }
+}
+
+jar {
+    // Make JAR checksums hash repeatable
+    preserveFileTimestamps = false
+    reproducibleFileOrder = true
+}
+
+
+dependencies {
+    implementation("com.github.jitpack:gradle-simple:1.0")
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.2.71"
+
+    // should keep upto date with latest version used by Corda
+    implementation "com.typesafe:config:1.3.2"
+
+
+    testCompile group: 'com.natpryce', name: 'hamkrest', version: '1.4.2.2'
+    testCompile('org.jetbrains.spek:spek-api:1.1.5') {
+        exclude group: 'org.jetbrains.kotlin'
+    }
+    testRuntime('org.jetbrains.spek:spek-junit-platform-engine:1.1.5') {
+        exclude group: 'org.junit.platform'
+        exclude group: 'org.jetbrains.kotlin'
+    }
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+    testCompile('org.junit.platform:junit-platform-runner:1.0.0')
+
+    testCompile('org.junit.platform:junit-platform-runner:1.0.0')
+
+    // spek v2
+    testCompile("org.spekframework.spek2:spek-dsl-jvm:2.0.0")
+    testCompile("org.spekframework.spek2:spek-runner-junit5:2.0.0")
+
+}
+
